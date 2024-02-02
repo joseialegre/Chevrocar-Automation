@@ -8,7 +8,7 @@ from openpyxl.styles import Alignment
 archivo1 = input("ingrese nombre de archivo de Exportar:     ")
 archivo2 = input("ingrese nombre de archivo de TiendaNube:     ")
 
-archivo2= archivo2+".csv"
+archivo2 = archivo2+".csv"
 
 wb1 = load_workbook(archivo1+".xlsx")
 sheet1 = wb1.active
@@ -16,7 +16,7 @@ sheet1 = wb1.active
 new_sheet = wb1.create_sheet('Temp')
 
 wb3 = Workbook()
-sheet3 =wb3.active
+sheet3 = wb3.active
 sheet3['A1'] = "SKU"
 sheet3['B1'] = "Precio Acutal"
 sheet3['C1'] = "Precio Anterior"
@@ -52,8 +52,8 @@ with open(archivo2, 'r') as csvfile:
         for index, filaTienda in enumerate(lista_tiendanube):
             # Comparamos SKU
             if str(filaTienda[16]) == str(filaExportar[1]):
-                print(amarillo + "Copiando los valores de... " +azul+ str(filaTienda[16]) + reset)
-                print("Antes: " + rojo + str(filaTienda[9]) + reset + " -->" +  " Después: " + azul + verde + str(filaExportar[22]) + reset)
+                print(amarillo + "Copiando los valores de... " + azul + str(filaTienda[16]) + reset)
+                print("Antes: " + rojo + str(filaTienda[9]) + reset + " -->" + " Después: " + azul + verde + str(filaExportar[22]) + reset)
                 sheet3[f'A{index + 1}'] = filaExportar[1]
                 sheet3[f'B{index + 1}'] = filaExportar[22]
                 sheet3[f'C{index + 1}'] = filaTienda[9]
