@@ -64,11 +64,16 @@ with open(archivo2, 'r') as csvfile:
                     sheet3[f'E{index + 1}'] = "Aumento"
                 if float(filaTienda[9]) == float(filaExportar[22]):
                     sheet3[f'E{index + 1}'] = "Sin Cambio"
+
                 lista_tiendanube[index][9] = filaExportar[22]
 
 with open(archivo2, 'w', newline='') as csvfile:
     writer = csv.writer(csvfile, delimiter=';')
     writer.writerows(lista_tiendanube)
+
+for row in sheet3.iter_rows():
+    for cell in row:
+        cell.alignment = Alignment(horizontal='center', vertical='center')
 
 print("Goodbye :)")
 wb1.close()
