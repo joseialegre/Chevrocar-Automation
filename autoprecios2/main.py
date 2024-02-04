@@ -1,7 +1,7 @@
 from openpyxl import load_workbook, Workbook
 from colorama import Fore, Style
+import locale
 import sys
-
 import csv
 from openpyxl.styles import Alignment
 
@@ -22,6 +22,9 @@ sheet3['B1'] = "Precio Acutal"
 sheet3['C1'] = "Precio Anterior"
 sheet3['D1'] = "Diferencia"
 sheet3['E1'] = "Variacion"
+
+locale.setlocale(locale.LC_NUMERIC, '')
+
 
 
 #########################
@@ -54,15 +57,19 @@ with open(archivo2, 'r') as csvfile:
             if str(filaTienda[16]) == str(filaExportar[1]):
                 print(amarillo + "Copiando los valores de... " + azul + str(filaTienda[16]) + reset)
                 print("Antes: " + rojo + str(filaTienda[9]) + reset + " -->" + " Después: " + azul + verde + str(filaExportar[22]) + reset)
+
+                precioTienda = locale.atof(str(filaTienda[9]))
+                precioExportar = locale.atof(str(filaExportar[22]))
+
                 sheet3[f'A{index + 1}'] = filaExportar[1]
                 sheet3[f'B{index + 1}'] = filaExportar[22]
                 sheet3[f'C{index + 1}'] = filaTienda[9]
-                sheet3[f'D{index + 1}'] = float(filaExportar[22])-float(filaTienda[9])
-                if float(filaTienda[9]) > float(filaExportar[22]):
+                sheet3[f'D{index + 1}'] = precioExportar-precioTienda
+                if precioTienda > precioExportar:
                     sheet3[f'E{index + 1}'] = "Disminución"
-                if float(filaTienda[9]) < float(filaExportar[22]):
+                if precioTienda < precioExportar:
                     sheet3[f'E{index + 1}'] = "Aumento"
-                if float(filaTienda[9]) == float(filaExportar[22]):
+                if precioTienda == precioExportar:
                     sheet3[f'E{index + 1}'] = "Sin Cambio"
 
                 lista_tiendanube[index][9] = filaExportar[22]
