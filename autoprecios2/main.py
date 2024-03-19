@@ -37,15 +37,51 @@ reset = Style.RESET_ALL
 
 # ELIMINO LAS COLUMNAS CON FALSE, CREO OTRO SHEET
 # LUEGO REEMPLAZO EL ORIGINAL
+#for row in sheet1.iter_rows(min_row=1, max_row=sheet1.max_row, values_only=True):
+#    if row[5] != False:
+#        new_sheet.append(row)
+#        print(verde + row[1] + " OK")
+#   else:
+#        print(rojo+row[1]+"ELIMINADO")
+#wb1.remove(sheet1)
+#new_sheet.title = sheet1.title
+#wb1.save(archivo1+".xlsx")
+
+
+
+# Diccionario para almacenar el precio mínimo por código de producto
+precios_minimos = {}
+
+# Recorre las filas de la hoja original
 for row in sheet1.iter_rows(min_row=1, max_row=sheet1.max_row, values_only=True):
-    if row[5] != False:
+    if row[5]:  # Si el valor en la columna 5 es verdadero
+        codigo_producto = row[1]
+        precio = row[22]
+        # Si el código de producto ya está en el diccionario
+        if codigo_producto in precios_minimos:
+            # Si el precio actual es menor que el precio mínimo registrado
+            if precio < precios_minimos[codigo_producto]:
+                precios_minimos[codigo_producto] = precio
+        else:
+            precios_minimos[codigo_producto] = precio
+
+# Vuelve a recorrer las filas para copiar solo los productos con el precio mínimo
+for row in sheet1.iter_rows(min_row=1, max_row=sheet1.max_row, values_only=True):
+    if row[5] and row[22] == precios_minimos.get(row[1]):
         new_sheet.append(row)
-        print(verde + row[1] + " OK")
+        print("Producto con código", row[1], "y precio", row[22], "copiado a la nueva hoja.")
+    elif not row[5]:
+        print("Producto con código", row[1], "eliminado.")
     else:
-        print(rojo+row[1]+"ELIMINADO")
+        print("Producto con código", row[1], "y precio", row[22], "no es el precio mínimo.")
+
 wb1.remove(sheet1)
 new_sheet.title = sheet1.title
 wb1.save(archivo1+".xlsx")
+
+
+
+
 
 with open(archivo2, 'r') as csvfile:
     reader = csv.reader(csvfile, delimiter=';')
@@ -58,8 +94,14 @@ with open(archivo2, 'r') as csvfile:
                 print(amarillo + "Copiando los valores de... " + azul + str(filaTienda[16]) + reset)
                 print("Antes: " + rojo + str(filaTienda[9]) + reset + " -->" + " Después: " + azul + verde + str(filaExportar[22]) + reset)
 
-                precioTienda = locale.atof(str(filaTienda[9]))
-                precioExportar = locale.atof(str(filaExportar[22]))
+                
+                precioTienda = str(filaTienda[9]).replace(",","")
+                precioTienda = float(precioTienda)
+                #print(precioTienda)
+                precioExportar = str(filaExportar[22])
+                precioExportar = float(precioExportar)
+                #print(precioExportar)
+
 
                 sheet3[f'A{index + 1}'] = filaExportar[1]
                 sheet3[f'B{index + 1}'] = filaExportar[22]
@@ -85,6 +127,7 @@ for row in sheet3.iter_rows():
 print("Goodbye :)")
 wb1.close()
 wb3.save("Precios.xlsx")
+input()
 
 
 # SKU de Exportar columna B = 1
